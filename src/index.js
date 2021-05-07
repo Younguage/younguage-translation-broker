@@ -22,4 +22,4 @@ io.on('connection', (socket) => {
         handles.deletePeer(socket.id);
     });
 });
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT || 8080);
