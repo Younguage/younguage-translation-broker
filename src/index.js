@@ -1,6 +1,6 @@
 const express = require('express')
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const INDEX = '/index.html';
 
 const server = express()
@@ -11,14 +11,18 @@ const io = require('socket.io')(server);
 const handles = require('./handles');
 const { peers } = require('./db');
 io.on('connection', (socket) => {
-    handles.newPeer(socket.id);
-    socket.on('peer', (data) => {
-        const peer = handles.setSignal(socket.id, data);
-        socket.emit('peer-id', peer.id);
+      handles.newPeer(socket.id);
+      socket.on('peer', (data) => {
+      const peer = handles.setSignal(socket.id, data);
+      socket.emit('peer-id', peer.id);
     });
     socket.on('get-signal', (data) => {
-        const signal = handles.getSignal(data);
-        socket.emit('incoming-signal', signal);
+        try {
+          const signal = handles.getSignal(data);
+          socket.emit('incoming-signal', signal);
+        } catch {
+          console.log('error')
+        }
     });
     socket.on('set-answer', (data) => {
         const rec = peers.getById(data.id).value();
